@@ -7,11 +7,11 @@
       <el-tabs v-model="currentIndex" stretch @tab-click="handleTabsClick">
         <el-tab-pane label="登录" name="login">
           <el-form :model="loginForm" :rules="rules" status-icon ref="loginForm">
-            <el-form-item label="用户名" label-width="80px" prop="username">
-              <el-input type="text" v-model="loginForm.username"></el-input>
+            <el-form-item label="用户名" label-width="80px" prop="userName">
+              <el-input type="text" v-model="loginForm.userName"></el-input>
             </el-form-item>
-            <el-form-item label="密码" label-width="80px" prop="password">
-              <el-input type="password" v-model="loginForm.password"></el-input>
+            <el-form-item label="密码" label-width="80px" prop="userPassword">
+              <el-input type="password" v-model="loginForm.userPassword"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('loginForm')">提交</el-button>
@@ -21,10 +21,10 @@
         <el-tab-pane label="注册" name="register">
           <el-form :model="registerForm" :rules="rules" status-icon ref="registerForm">
             <el-form-item label="用户名" label-width="80px" prop="username">
-              <el-input type="text" v-model="registerForm.username"></el-input>
+              <el-input type="text" v-model="registerForm.userName"></el-input>
             </el-form-item>
             <el-form-item label="密码" label-width="80px" prop="password">
-              <el-input type="password" v-model="registerForm.password"></el-input>
+              <el-input type="password" v-model="registerForm.userPassword"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" label-width="80px" prop="configurePassword">
               <el-input type="password" v-model="registerForm.configurePassword"></el-input>
@@ -40,11 +40,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+import router from "@/router";
 
 export default {
   data() {
     //验证规则
-    var validateUserName = (rule, value, callback) => {
+    const validateUserName = (rule, value, callback) => {
       if (value === '') {
         callback(new Error("请输入用户名"))
       } else if (value.length < 6) {
@@ -52,42 +54,42 @@ export default {
       } else {
         callback();
       }
-    }
-    var validatePassword = (rule, value, callback) => {
+    };
+    const validatePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error("请输入密码"))
       } else {
         callback();
       }
-    }
-    var validateConfigurePassword = (rule, value, callback) => {
+    };
+    const validateConfigurePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error("请输入密码"))
-      } else if (value !== this.registerForm.password) {
+      } else if (value !== this.registerForm.userPassword) {
         callback(new Error("两次输入密码不一致！"))
       } else {
         callback();
       }
-    }
+    };
     return {
       currentIndex: "login",
       loginForm: {
-        username: "",
-        password: ""
+        userName: "",
+        userPassword: ""
       },
       registerForm: {
-        username: "",
-        password: "",
+        userName: "",
+        userPassword: "",
         configurePassword: ""
       },
       activeTab: "login",
       rules: {
-        username: [
+        userName: [
           {
             validator: validateUserName, trigger: "blur"
           }
         ],
-        password: [
+        userPassword: [
           {
             validator: validatePassword, trigger: "blur"
           }
@@ -105,20 +107,36 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.activeTab === 'login') {
-            //登录
-            // console.log(this.loginForm)
+            // 登录
+            console.log(this.loginForm)
+            axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm})
+                .then(response => {
+                  console.log(response.data);
+
+                })
+                .catch(error => {
+                  console.error(error);
+                });
           }
           if (this.activeTab === 'register') {
-            //注册
-            // console.log(this.registerForm)
+            // 注册
+            axios.post('http://localhost:8081/login/register', this.registerForm)
+                .then(response => {
+                  console.log(response.data);
+                  router.push({path: '/'});
+                })
+                .catch(error => {
+                  console.error(error);
+                });
           }
         } else {
-          return;
+          console.log("error submit!!");
+          return false;
         }
       });
     },
     handleTabsClick(tab) {
-      this.activeTab = tab.name;
+      this.activeTab = tab.props.name;
     }
   }
 }
