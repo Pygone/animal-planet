@@ -1,17 +1,95 @@
 <template>
   <div id="building">
-    个人空间
+    <div class="person-information">
+      <el-container>
+        <el-aside width="200px">
+          <el-avatar shape="circle" :size="140" :src="squareUrl" class="block"/>
+
+        </el-aside>
+        <el-main>
+          <div class="username">{{ name }}</div>
+          <div class="signal">唯有猫咪和自由不可辜负~</div>
+        </el-main>
+      </el-container>
+    </div>
+
+    <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
+      <li v-for="i in count" :key="i" class="infinite-list-item">
+        <el-avatar shape="circle" :size="115" :src="squareUrl" class="inblock"/>
+        <div class="inusername">{{ name }}</div>
+        帖子在这{{ i }}
+      </li>
+    </ul>
   </div>
 </template>
 <script>
-export default {}
+import {Camera, LocationInformation} from "@element-plus/icons-vue";
+
+export default {
+  computed: {
+    LocationInformation() {
+      return LocationInformation
+    },
+    Camera() {
+      return Camera
+    }
+  },
+  data () {
+    return {
+      count: 0,
+      squareUrl: require("@/static/img.jpg"),
+      name:"mjj",
+      textarea:"",
+    }
+  },
+  methods: {
+    load () {
+      this.count += 2
+    }
+  }
+}
 </script>
 <style scoped lang="less">
-#building {
-  background: url("../../static/background.jpeg");
-  width: 100%; //大小设置为100%
-  height: 100%; //大小设置为100%
-  position: fixed;
-  background-size: 100% 100%;
+#building{
+  background:url("../../static/background.jpeg");
+  width:100%;			//大小设置为100%
+  height:100%;			//大小设置为100%
+  position:fixed;
+  background-size:100% 100%;
+}
+.infinite-list {
+
+  height: 600px;
+  width: 1300px;
+  padding: 0;
+  margin: auto;
+  list-style: none;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: rgba(244, 206, 159, 0.8);
+  margin: 10px;
+  color: black;
+}
+.block{
+  margin-left:40px;
+  margin-top: 30px;
+}
+.username{
+  margin-top: 10px;
+  margin-left: 10px;
+  color: black;
+  font-weight: 900;
+  font-size: 30px;
+}
+.signal{
+  margin-left:10px;
+  margin-top: 30px;
+  color: #3c77a9;
+  font-weight: 900;
+  font-size: 23px;
 }
 </style>
