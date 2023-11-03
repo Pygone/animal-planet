@@ -106,11 +106,11 @@ export default {
         if (valid) {
           if (this.activeTab === 'login') {
             //登录
-            // console.log(this.loginForm)
+            console.log(this.loginForm)
           }
           if (this.activeTab === 'register') {
             //注册
-            // console.log(this.registerForm)
+            console.log(this.registerForm)
           }
         } else {
           return;
@@ -118,7 +118,7 @@ export default {
       });
     },
     handleTabsClick(tab) {
-      this.activeTab = tab.name;
+      this.activeTab = tab.props.name;
     }
   }
 }

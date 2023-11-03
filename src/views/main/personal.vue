@@ -3,49 +3,50 @@
     <div class="person-information">
       <el-container>
         <el-aside width="200px">
-          <el-avatar shape="circle" :size="140" :src="squareUrl" class="block"/>
+          <el-avatar shape="circle" :size="140" :src="user.squareUrl" class="block"/>
 
         </el-aside>
         <el-main>
-          <div class="username">{{ name }}</div>
-          <div class="signal">唯有猫咪和自由不可辜负~</div>
+          <div class="username">{{ user.name }}</div>
+          <div class="signal">{{ user.signal }}</div>
         </el-main>
       </el-container>
     </div>
-
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <li v-for="i in count" :key="i" class="infinite-list-item">
-        <el-avatar shape="circle" :size="115" :src="squareUrl" class="inblock"/>
-        <div class="inusername">{{ name }}</div>
-        帖子在这{{ i }}
+      <li v-for="i in limitedCount" :key="i" class="infinite-list-item">
+        <message/>
       </li>
     </ul>
   </div>
 </template>
-<script>
-import {Camera, LocationInformation} from "@element-plus/icons-vue";
 
+<script>
+import message from "@/components/message.vue";
 export default {
   computed: {
-    LocationInformation() {
-      return LocationInformation
-    },
-    Camera() {
-      return Camera
+    limitedCount() {
+      // 设置上限为10，如果count超过10，将返回10，否则返回count的当前值
+      return Math.min(this.user.count, 10);//在这里设置帖子的最多数量
     }
   },
   data () {
     return {
-      count: 0,
-      squareUrl: require("@/static/img.jpg"),
-      name:"mjj",
-      textarea:"",
+      user:{
+        count: 0,
+        squareUrl: require("@/static/img.jpg"),
+        name:"mjj",
+        signal:"唯有猫咪和自由不可辜负~"
+      },
     }
   },
   methods: {
     load () {
-      this.count += 2
+      this.user.count += 2
     }
+  },
+
+  components:{
+    message,
   }
 }
 </script>
@@ -57,23 +58,25 @@ export default {
   position:fixed;
   background-size:100% 100%;
 }
-.infinite-list {
 
-  height: 600px;
-  width: 1300px;
+.infinite-list {
+  height: 60%;
+  width: 80%;
   padding: 0;
   margin: auto;
   list-style: none;
 }
 .infinite-list .infinite-list-item {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 82%;
   background: rgba(244, 206, 159, 0.8);
   margin: 10px;
   color: black;
 }
+
 .block{
   margin-left:40px;
   margin-top: 30px;
