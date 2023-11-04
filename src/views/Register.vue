@@ -5,21 +5,26 @@
         <template #header>
           <div class="card-header">
             <span>欢迎来到动物星球~</span>
-            <el-button text @click="gotoRegister()" class="button" type="primary">注册</el-button>
+            <el-button text @click="backToLogin()" class="button" type="primary">返回</el-button>
           </div>
         </template>
-        <el-form :model="loginForm" :rules="rules" status-icon ref="loginForm">
+        <el-form :model="registerForm" :rules="rules" status-icon ref="registerForm">
           <el-form-item prop="userName">
-            <el-input type="text" v-model="loginForm.userName" placeholder="用户名" :prefix-icon="Avatar"
+            <el-input type="text" v-model="registerForm.userName" placeholder="用户名" :prefix-icon="Avatar"
                       class="input1"></el-input>
           </el-form-item>
           <el-form-item prop="userPassword">
-            <el-input type="password" v-model="loginForm.userPassword" placeholder="密码" :prefix-icon="Lock"
+            <el-input type="password" v-model="registerForm.userPassword" placeholder="密码" :prefix-icon="Lock"
+                      class="input1">
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="checkPassword">
+            <el-input type="password" v-model="registerForm.checkPassword" placeholder="确认密码" :prefix-icon="Lock"
                       class="input1">
             </el-input>
           </el-form-item>
           <el-row justify="center">
-            <el-button type="primary" @click="submitForm('loginForm')" auto-insert-space text class="button">登陆
+            <el-button type="primary" @click="submitForm('registerForm')" auto-insert-space text class="button">提交
             </el-button>
           </el-row>
         </el-form>
@@ -51,10 +56,18 @@ export default {
         callback();
       }
     };
+    const validateSamePassword = (rule, value, callback) => {
+      if (value !== this.registerForm.userPassword) {
+        callback(new Error("两次输入密码不一致"));
+      } else {
+        callback();
+      }
+    };
     return {
-      loginForm: {
+      registerForm: {
         userName: "",
-        userPassword: ""
+        userPassword: "",
+        checkPassword: ""
       },
       rules: {
         userName: [
@@ -67,6 +80,11 @@ export default {
             validator: validatePassword, trigger: "blur", required: true
           }
         ],
+        checkPassword: [
+          {
+            validator: validateSamePassword, trigger: "blur", required: true
+          }
+        ]
       }
     }
   },
@@ -74,7 +92,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const {data} = axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm});
+          const {data} = axios.get('http://localhost:8081/login/register', {params: this.registerForm});
           console.log(data);
           router.push({path: '/'});
         } else {
@@ -83,8 +101,8 @@ export default {
         }
       });
     },
-    gotoRegister() {
-      router.push({path: '/register'});
+    backToLogin() {
+      router.push({path: '/login'});
     }
   }
 }
@@ -104,14 +122,6 @@ export default {
   margin: 10% auto;
   border-radius: 10px;
   min-width: 20%;
-}
-
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-width: 150px;
 }
 
 .el-form-item {
@@ -138,6 +148,13 @@ export default {
     background-color: transparent;
     box-shadow: none;
   }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 150px;
 }
 
 :deep(.el-form-item ) {
