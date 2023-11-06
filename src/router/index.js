@@ -13,14 +13,14 @@ const routes = [
             {
                 path: '',
                 name: 'Home',
-                component: Home,
+                component: () => import("../views/Login.vue"),
                 // meta:{
                 //     isLogin:true
                 // },
                 //这一部分有，则登录之后才能访问，不能游客访问
             },
             {
-                path: 'main',
+                path: 'index',
                 name: 'Main',
                 component: () => import('../views/main/Main/main.vue'),
                 // meta:{

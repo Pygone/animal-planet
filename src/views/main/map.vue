@@ -15,8 +15,8 @@ export default {
 <style scoped lang="less">
 .map{
   overflow: hidden;
-  height: 85%;
-  width: 85%;
+  height: auto;
+  width: 90%;
   position: absolute;
   top: 50%;
   left: 50%;

@@ -74,9 +74,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const {data} = axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm});
-          console.log(data);
-          router.push({path: '/'});
+          let data = axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm}).then((res) => {
+            if (res.data.code === 1000) {
+              router.push("/index");
+            } else {
+              this.$message({
+                message: '用户名或密码错误',
+                type: 'error'
+              });
+            }
+          });
+
         } else {
           console.log("error submit!!");
           return false;
