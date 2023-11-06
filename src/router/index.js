@@ -22,7 +22,7 @@ const routes = [
             {
                 path: 'main',
                 name: 'Main',
-                component: () => import('../views/main/main.vue'),
+                component: () => import('../views/main/Main/main.vue'),
                 // meta:{
                 //     isLogin:true
                 // },

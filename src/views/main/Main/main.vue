@@ -8,15 +8,7 @@
           <div class="username">{{ user.name }}</div>
         </el-aside>
         <el-main class="inputblock">
-          <el-input
-              type="textarea"
-              :rows="5"
-              placeholder="请输入内容"
-              v-model="textarea"
-              class="input">
-          </el-input>
-          <el-button type="primary" :icon="Camera" color="#FCF882FF" class="button"/>
-          <el-button type="primary" :icon="LocationInformation" color="#FCF882FF" class="button"/>
+          <publish/>
         </el-main>
       </el-container>
     </div>
@@ -32,6 +24,7 @@
 <script>
 import {Camera, LocationInformation} from "@element-plus/icons-vue";
 import message from "@/components/message.vue";
+import publish from "./publish.vue"
 export default {
   computed: {
     LocationInformation() {
@@ -48,6 +41,7 @@ export default {
   data() {
     return {
       count: 0,//count存帖子数量
+      fileList:[],
       user:{
         squareUrl: require("@/static/img.jpg"),
         name: "mjj",
@@ -59,17 +53,24 @@ export default {
   methods: {
     load() {
       this.count += 2
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
     }
   },
   components:{
-    message
+    message,
+    publish
   }
 }
 </script>
 
 <style scoped lang="less">
 #building {
-  background: url("../../static/background.jpeg");
+  background: url("../../../static/background.jpeg");
   width: 100%; //大小设置为100%
   height: 100%; //大小设置为100%
   position: fixed;
@@ -121,18 +122,11 @@ export default {
 .inputblock{//输入框
   display: flex;
   justify-content: center;
- }
-.input {
-  width: 80%;
-  height: 100%;
+  background: rgba(255, 255, 255, 0.5); /* 设置背景颜色为白色 */
+  margin-right: 200px;
+  height: 325px;
 }
-.button {
-  margin: 0;
-  width: 7.5%;
-  height: 82%;
-  font-size: 60px;
-  border: 1px solid grey;
-}
+
 
 
 
