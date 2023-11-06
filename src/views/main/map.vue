@@ -1,17 +1,25 @@
 <template>
-  <div id="building">
-    地图总览
+  <div>
+    <el-image :src="url" class="map"></el-image>
   </div>
 </template>
 <script>
-export default {}
+export default {
+  data(){
+    return{
+      url:require('@/static/map.jpg'),
+    }
+  }
+}
 </script>
 <style scoped lang="less">
-#building {
-  background: url("../../static/background.jpeg");
-  width: 100%; //大小设置为100%
-  height: 100%; //大小设置为100%
-  position: fixed;
-  background-size: 100% 100%;
+.map{
+  overflow: hidden;
+  height: 85%;
+  width: 85%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
