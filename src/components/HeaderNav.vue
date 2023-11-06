@@ -20,6 +20,7 @@
 
 
 <script>
+import router from "@/router";
 export default {
   data() {
     return {
@@ -28,7 +29,7 @@ export default {
   },
   methods: {
     logoutHandle() {
-
+      router.push({path: '/login'});
     }
   }
 
