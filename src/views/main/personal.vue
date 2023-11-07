@@ -4,7 +4,6 @@
       <el-container>
         <el-aside width="200px">
           <el-avatar shape="circle" :size="140" :src="user.squareUrl" class="block"/>
-
         </el-aside>
         <el-main>
           <div class="username">{{ user.name }}</div>
@@ -31,12 +30,7 @@ export default {
   },
   data () {
     return {
-      user:{
-        count: 0,
-        squareUrl: require("@/static/img.jpg"),
-        name:"mjj",
-        signal:"唯有猫咪和自由不可辜负~"
-      },
+      user: JSON.parse(this.$route.query.user),
     }
   },
   methods: {

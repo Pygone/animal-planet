@@ -1,78 +1,21 @@
-<!--<template>-->
-<!--  <div>-->
-<!--    <h1></h1>-->
-
-<!--    <form @submit.prevent="submitPost">-->
-
-<!--      <div>-->
-<!--        <textarea id="content" v-model="post.content" required></textarea>-->
-<!--      </div>-->
-<!--      <div>-->
-<!--&lt;!&ndash;        <input type="text" id="title" v-model="post.location" required>&ndash;&gt;-->
-<!--      </div>-->
-<!--      <div>-->
-<!--        <label for="image">上传图片：</label>-->
-<!--        <input type="file" id="image" @change="handleFileUpload" accept="image/*">-->
-<!--      </div>-->
-<!--      <button type="submit">发布</button>-->
-<!--    </form>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--export default {-->
-<!--  data() {-->
-<!--    return {-->
-<!--      post: {-->
-<!--        content: "",-->
-<!--        location: "",-->
-<!--        image: null // 用于存储上传的图片文件-->
-<!--      },-->
-
-<!--    };-->
-<!--  },-->
-<!--  methods: {-->
-<!--    submitPost() {-->
-<!--      // 这里可以编写提交帖子的逻辑，包括上传图片文件-->
-<!--      console.log("发布帖子:", this.post);-->
-
-<!--      // 清空表单-->
-<!--      this.post.location = "";-->
-<!--      this.post.content = "";-->
-<!--      this.post.image = null;-->
-<!--    },-->
-<!--    handleFileUpload(event) {-->
-<!--      const file = event.target.files[0];-->
-<!--      if (file) {-->
-<!--        this.post.image = file;-->
-<!--      }-->
-<!--    }-->
-<!--  }-->
-<!--};-->
-<!--</script>-->
-
 <template>
   <div>
     <el-form ref="postForm" :model="post" class="form-container">
       <el-main class="form-row">
-        <el-form-item prop="content"  class="input">
-          <el-input :rows="7" type="textarea" v-model="post.content" placeholder="请输入内容" class="input"></el-input>
+        <el-form-item prop="content" class="input">
+          <el-input :rows="7" type="textarea" v-model="post.artContent" placeholder="请输入内容"
+                    class="input"></el-input>
         </el-form-item>
         <el-form-item class="picture">
-          <el-upload action="/your-upload-endpoint"
-                     list-type="picture-card"
-                     :on-success="handleUploadSuccess" aria-placeholder="选择图片"><!-- 上传图片的服务器端地址在action中 -->
+          <el-upload action="/your-upload-endpoint" list-type="picture-card" :on-success="handleUploadSuccess"
+                     aria-placeholder="选择图片">
             <el-button type="primary" :icon="Camera" color="#FCF882FF" class="button"/>
           </el-upload>
         </el-form-item>
       </el-main>
       <el-form-item prop="location" class="location">
-        <el-select v-model="post.location" placeholder="请选择定位">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+        <el-select v-model="post.artLat" placeholder="请选择定位">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
@@ -85,6 +28,7 @@
 
 <script>
 import {Camera, LocationInformation} from "@element-plus/icons-vue";
+import axios from "axios";
 
 export default {
   computed: {
@@ -96,35 +40,43 @@ export default {
     }
   },
   data() {
+    let user;
+    try {
+      user = JSON.parse(this.$route.query.user);
+    } catch (error) {
+      user = {userId: 1};
+    }
+
     return {
       post: {
-        content: "",
-        location: "",
-        images: [] // 存储上传的图片
+        userId: user.userId,
+        artTitle: "test",
+        artContent: "",
+        artLat: "",
       },
       options: [{
-        value: '选项1',
+        value: '西十二教学楼',
         label: '西十二教学楼'
       }, {
-        value: '选项2',
+        value: '东九教学楼',
         label: '东九教学楼'
       }, {
-        value: '选项3',
+        value: '沁苑学生宿舍',
         label: '沁苑学生宿舍'
       }, {
-        value: '选项4',
+        value: '紫菘学生宿舍',
         label: '紫菘学生宿舍'
       }, {
-        value: '选项5',
+        value: '韵苑学生宿舍',
         label: '韵苑学生宿舍'
       }, {
-        value: '选项6',
+        value: '主校区图书馆',
         label: '主校区图书馆'
       }, {
-        value: '选项7',
+        value: '校医院',
         label: '校医院'
       }, {
-        value: '选项8',
+        value: '居民区',
         label: '居民区'
       }],
     };
@@ -135,13 +87,18 @@ export default {
       this.post.images.push(response.url);
     },
     submitPost() {
-      // 在这里执行帖子提交逻辑，包括帖子内容和图片信息
-      console.log("发布帖子:", this.post);
-      // 清空表单
-      this.$refs.postForm.resetFields();
-      this.post.images = [];
-    }
-  }
+      axios.post('http://localhost:8081/postArticle', this.post)
+          .then(response => {
+            console.log(response.data);
+
+            // 你可能还想在这里添加一些代码，例如导航到其他页面
+          })
+          .catch(error => {
+            console.error(error);
+            // 你可能还想在这里添加一些代码，例如显示一个错误消息
+          });
+    },
+  },
 };
 </script>
 <style scoped lang="less">
@@ -164,17 +121,23 @@ export default {
   width: 100%;
   height: auto;
 }
+
 .picture {
   margin-top: 0;
-  width: auto; /* 设置图片选择框的宽度 */
-  height: auto; /* 设置图片选择框的高度 */
+  width: auto;
+  /* 设置图片选择框的宽度 */
+  height: auto;
+  /* 设置图片选择框的高度 */
 }
 
 .location {
   width: 100%;
-  margin-left: 1px; /* 设置位置左边距 */
-  display: flex; /* 使用 Flex 布局水平排列图标和选择框 */
-  margin-top: 10px; /* 添加一些上边距以与上传按钮分隔 */
+  margin-left: 1px;
+  /* 设置位置左边距 */
+  display: flex;
+  /* 使用 Flex 布局水平排列图标和选择框 */
+  margin-top: 10px;
+  /* 添加一些上边距以与上传按钮分隔 */
 }
 
 .button {
@@ -185,7 +148,6 @@ export default {
   padding: 0;
 }
 
-.publish{
-
+.publish {
 }
 </style>

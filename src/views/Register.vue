@@ -102,7 +102,7 @@ export default {
       });
     },
     backToLogin() {
-      router.push({path: '/login'});
+      router.push({path: '/'});
     }
   }
 }

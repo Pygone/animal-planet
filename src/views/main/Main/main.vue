@@ -1,21 +1,20 @@
 <template>
   <div id="building">
-    <div class="signal">{{ user.signal }}</div>
+    <div class="signal">{{ user.userShow }}</div>
     <div class="person-information">
       <el-container>
         <el-aside width="200px" class="container">
-          <el-avatar shape="circle" :size="140" :src="user.squareUrl" class="block"/>
-          <div class="username">{{ user.name }}</div>
+          <el-avatar shape="circle" :size="140" :src="user.userImg" class="block"/>
+          <div class="username">{{ user.userName }}</div>
         </el-aside>
-        <el-main class="inputblock">
+        <el-main class="inputBlock">
           <publish/>
         </el-main>
       </el-container>
     </div>
-
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <li v-for="i in limitedCount" :key="i" class="infinite-list-item">
-        <message/>
+      <li v-for="(post1, index) in posts" :key="index" class="infinite-list-item">
+        <message :post="post1"/>
       </li>
     </ul>
   </div>
@@ -25,6 +24,8 @@
 import {Camera, LocationInformation} from "@element-plus/icons-vue";
 import message from "@/components/message.vue";
 import publish from "./publish.vue"
+import axios from 'axios'
+
 export default {
   computed: {
     LocationInformation() {
@@ -33,35 +34,29 @@ export default {
     Camera() {
       return Camera
     },
-    limitedCount() {
-      // 设置上限为10，如果count超过10，将返回10，否则返回count的当前值
-      return Math.min(this.count, 10);//在这里设置帖子的最多数量
-    }
   },
   data() {
     return {
-      count: 0,//count存帖子数量
-      fileList:[],
-      user:{
-        squareUrl: require("@/static/img.jpg"),
-        name: "mjj",
-        signal:"唯有猫咪和自由不可辜负~"
-      },
+      posts: [],
+      user: JSON.parse(this.$route.query.user),
       textarea: "",
     }
   },
   methods: {
     load() {
-      this.count += 2
+      console.log("load");
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    }
   },
-  components:{
+  mounted() {
+    axios.get('http://127.0.0.1:8081/browse') // 替换为你的API URL
+        .then(response => {
+          this.posts = response.data.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  },
+  components: {
     message,
     publish
   }
@@ -84,6 +79,7 @@ export default {
   margin: auto;
   list-style: none;
 }
+
 .infinite-list .infinite-list-item {
   display: flex;
   position: relative;
@@ -95,22 +91,31 @@ export default {
   color: black;
 }
 
-.container{//头像和名字
+.container {
+  //头像和名字
   margin-left: auto;
   display: grid;
   place-items: center;
 }
-.username {//名字
+
+.username {
+  //名字
   color: black;
   font-weight: 900;
   font-size: 30px;
 }
-.block {//头像
+
+.block {
+  //头像
   display: flex;
-  justify-content: right; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  justify-content: right;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
 }
-.signal {//个性签名
+
+.signal {
+  //个性签名
   margin-left: 40px;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -119,15 +124,13 @@ export default {
   font-size: 23px;
 }
 
-.inputblock{//输入框
+.inputBlock {
+  //输入框
   display: flex;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.5); /* 设置背景颜色为白色 */
+  background: rgba(255, 255, 255, 0.5);
+  /* 设置背景颜色为白色 */
   margin-right: 200px;
   height: 325px;
 }
-
-
-
-
 </style>

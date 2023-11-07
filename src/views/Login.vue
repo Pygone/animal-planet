@@ -74,9 +74,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let data = axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm}).then((res) => {
+          axios.get('http://localhost:8081/login/checklogin', {params: this.loginForm}).then((res) => {
             if (res.data.code === 1000) {
-              router.push("/index");
+              console.log(res.data.data);
+              this.$router.push({name: 'index', query: {user: JSON.stringify(res.data.data)}});
             } else {
               this.$message({
                 message: '用户名或密码错误',
@@ -99,7 +100,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-
 .el-container {
   height: auto;
   width: auto;
@@ -148,7 +148,7 @@ export default {
   }
 }
 
-:deep(.el-form-item ) {
+:deep(.el-form-item) {
   .el-input__validateIcon {
     display: none;
   }

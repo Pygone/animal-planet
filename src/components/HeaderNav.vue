@@ -12,7 +12,7 @@
     <el-menu-item index="/personal">个人空间</el-menu-item>
     <el-menu-item index="/map">地图总览</el-menu-item>
     <el-menu-item class="user" style="position:absolute;right:0;">
-      <span class="user-name">马嘉骏</span>
+      <span class="user-name">{{ user.userName }}</span>
       <el-button @click="logoutHandle">退出</el-button>
     </el-menu-item>
   </el-menu>
@@ -21,9 +21,11 @@
 
 <script>
 import router from "@/router";
+
 export default {
   data() {
     return {
+      user: JSON.parse(this.$route.query.user),
       active: '1'
     }
   },
