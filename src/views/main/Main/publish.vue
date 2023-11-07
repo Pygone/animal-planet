@@ -1,68 +1,16 @@
-<!--<template>-->
-<!--  <div>-->
-<!--    <h1></h1>-->
-
-<!--    <form @submit.prevent="submitPost">-->
-
-<!--      <div>-->
-<!--        <textarea id="content" v-model="post.content" required></textarea>-->
-<!--      </div>-->
-<!--      <div>-->
-<!--&lt;!&ndash;        <input type="text" id="title" v-model="post.location" required>&ndash;&gt;-->
-<!--      </div>-->
-<!--      <div>-->
-<!--        <label for="image">上传图片：</label>-->
-<!--        <input type="file" id="image" @change="handleFileUpload" accept="image/*">-->
-<!--      </div>-->
-<!--      <button type="submit">发布</button>-->
-<!--    </form>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--export default {-->
-<!--  data() {-->
-<!--    return {-->
-<!--      post: {-->
-<!--        content: "",-->
-<!--        location: "",-->
-<!--        image: null // 用于存储上传的图片文件-->
-<!--      },-->
-
-<!--    };-->
-<!--  },-->
-<!--  methods: {-->
-<!--    submitPost() {-->
-<!--      // 这里可以编写提交帖子的逻辑，包括上传图片文件-->
-<!--      console.log("发布帖子:", this.post);-->
-
-<!--      // 清空表单-->
-<!--      this.post.location = "";-->
-<!--      this.post.content = "";-->
-<!--      this.post.image = null;-->
-<!--    },-->
-<!--    handleFileUpload(event) {-->
-<!--      const file = event.target.files[0];-->
-<!--      if (file) {-->
-<!--        this.post.image = file;-->
-<!--      }-->
-<!--    }-->
-<!--  }-->
-<!--};-->
-<!--</script>-->
-
 <template>
   <div>
     <el-form ref="postForm" :model="post" class="form-container">
       <el-main class="form-row">
         <el-form-item prop="content"  class="input">
-          <el-input :rows="7" type="textarea" v-model="post.content" placeholder="请输入内容" class="input"></el-input>
+          <el-input :rows="5" type="textarea" v-model="post.content" placeholder="请输入内容" class="input"></el-input>
         </el-form-item>
         <el-form-item class="picture">
           <el-upload action="/your-upload-endpoint"
                      list-type="picture-card"
-                     :on-success="handleUploadSuccess" aria-placeholder="选择图片"><!-- 上传图片的服务器端地址在action中 -->
-            <el-button type="primary" :icon="Camera" color="#FCF882FF" class="button"/>
+                     :on-success="handleUploadSuccess"
+                     drag multiple><!-- 上传图片的服务器端地址在action中 -->
+            <el-button type="primary" :icon="Camera" color="white" class="button"/>
           </el-upload>
         </el-form-item>
       </el-main>
@@ -150,7 +98,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 1100px;
-  height: 300px;
+  height: 250px;
   margin: 0 auto;
 }
 
@@ -162,12 +110,11 @@ export default {
 
 .input {
   width: 100%;
-  height: auto;
 }
 .picture {
   margin-top: 0;
+  background-size: initial;
   width: auto; /* 设置图片选择框的宽度 */
-  height: auto; /* 设置图片选择框的高度 */
 }
 
 .location {
@@ -178,14 +125,12 @@ export default {
 }
 
 .button {
-  width: 100%;
-  height: 100%;
-  font-size: 60px;
-  border: 1px solid grey;
+  font-size: 80px;
   padding: 0;
+  width: 100%;
 }
-
-.publish{
-
+/deep/ .el-upload{
+  height: initial;
+  width: 100%;
 }
 </style>
