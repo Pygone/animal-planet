@@ -59,11 +59,20 @@
           <el-input :rows="7" type="textarea" v-model="post.content" placeholder="请输入内容" class="input"></el-input>
         </el-form-item>
         <el-form-item class="picture">
-          <el-upload action="/your-upload-endpoint"
+          <el-upload  
+                     :auto-upload="false"
                      list-type="picture-card"
                      :on-success="handleUploadSuccess" aria-placeholder="选择图片"><!-- 上传图片的服务器端地址在action中 -->
             <el-button type="primary" :icon="Camera" color="#FCF882FF" class="button"/>
           </el-upload>
+          <div class="image-container">
+        <img
+          v-for="(image, index) in post.images"
+          :key="index"
+          :src="image.url"
+          class="uploaded-image"
+        >
+      </div>
         </el-form-item>
       </el-main>
       <el-form-item prop="location" class="location">
@@ -72,7 +81,7 @@
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
+              :value="item.label">
           </el-option>
         </el-select>
       </el-form-item>
@@ -80,13 +89,28 @@
         <el-button type="primary" @click="submitPost">发布</el-button>
       </el-form-item>
     </el-form>
+    <div  v-for="(item,index) in messages" :key="index">
+      {{item}}
+    </div>
   </div>
 </template>
 
 <script>
 import {Camera, LocationInformation} from "@element-plus/icons-vue";
+const now = new Date(); // 创建一个当前日期时间对象
+const year = now.getFullYear(); // 获取当前年份
+const month = now.getMonth() + 1; // 获取当前月份，注意月份是从0开始计数的，所以要加1
+const date = now.getDate(); // 获取当前日期
+const hour = now.getHours(); // 获取当前小时数
+const minute = now.getMinutes(); // 获取当前分钟数
+const second = now.getSeconds(); // 获取当前秒数
+
+// 将时间格式化为字符串，例如：2023-11-06 14:53:30
+const formattedTime = `${year}-${month.toString().padStart(2, "0")}-${date.toString().padStart(2, "0")} ${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${second.toString().padStart(2, "0")}`;
+
 
 export default {
+
   computed: {
     Camera() {
       return Camera
@@ -97,9 +121,11 @@ export default {
   },
   data() {
     return {
+      messages:[],
       post: {
         content: "",
         location: "",
+        time:"",
         images: [] // 存储上传的图片
       },
       options: [{
@@ -132,14 +158,27 @@ export default {
   methods: {
     handleUploadSuccess(response, file, fileList) {
       // 处理图片上传成功后的回调，将上传成功的图片信息存储在post.images数组中
-      this.post.images.push(response.url);
+      // this.post.images.push(response.url);
+      // this.messages.push(this.post.content)
+      console.log('response',response)
+      this.post.images = fileList.map((file) => ({ url: file.response.url }));
+      //this.post.images.push(response.url);
     },
     submitPost() {
       // 在这里执行帖子提交逻辑，包括帖子内容和图片信息
       console.log("发布帖子:", this.post);
+      this.post.time = formattedTime;
+      //this.messages = [...this.messages,this.post]
+      this.messages.push(this.post.content)
+      this.messages.push(this.post.location)
+      this.messages.push(this.post.time)
+      this.messages.push(this.post.images)
+      console.log(this.messages)
+      
       // 清空表单
       this.$refs.postForm.resetFields();
       this.post.images = [];
+   
     }
   }
 };

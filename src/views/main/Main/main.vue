@@ -35,7 +35,7 @@ export default {
     },
     limitedCount() {
       // 设置上限为10，如果count超过10，将返回10，否则返回count的当前值
-      return Math.min(this.count, 10);//在这里设置帖子的最多数量
+      return Math.min(this.count, 1);//在这里设置帖子的最多数量
     }
   },
   data() {
