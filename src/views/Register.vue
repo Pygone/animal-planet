@@ -92,9 +92,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const {data} = axios.get('http://localhost:8081/login/register', {params: this.registerForm});
-          console.log(data);
-          router.push({path: '/'});
+          axios.post('http://localhost:8081/login/register', {params: this.registerForm})
+              .then(({data}) => {
+                console.log(data);
+                router.push({path: '/'});
+              });
         } else {
           console.log("error submit!!");
           return false;

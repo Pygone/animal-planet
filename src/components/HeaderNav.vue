@@ -7,10 +7,10 @@
       active-text-color="#000000"
       style="position: relative;"
       router>
-    <el-menu-item index="/">欢迎来到动物星球~</el-menu-item>
-    <el-menu-item index="/index">首页</el-menu-item>
-    <el-menu-item index="/personal">个人空间</el-menu-item>
-    <el-menu-item index="/map">地图总览</el-menu-item>
+    <el-menu-item index="/home">欢迎来到动物星球~</el-menu-item>
+    <el-menu-item index="/home/index">首页</el-menu-item>
+    <el-menu-item index="/home/personal">个人空间</el-menu-item>
+    <el-menu-item index="/home/map">地图总览</el-menu-item>
     <el-menu-item class="user" style="position:absolute;right:0;">
       <span class="user-name">{{ user.userName }}</span>
       <el-button @click="logoutHandle">退出</el-button>
@@ -23,15 +23,22 @@
 import router from "@/router";
 
 export default {
+
   data() {
+    let user;
+    try {
+      user = JSON.parse(this.$route.query.user);
+    } catch (error) {
+      user = {userId: 1};
+    }
     return {
-      user: JSON.parse(this.$route.query.user),
+      user: user,
       active: '1'
     }
   },
   methods: {
     logoutHandle() {
-      router.push({path: '/login'});
+      router.push({path: '/'});
     }
   }
 
