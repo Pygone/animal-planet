@@ -58,6 +58,8 @@ export default {
     };
     const validateSamePassword = (rule, value, callback) => {
       if (value !== this.registerForm.userPassword) {
+        console.log(value);
+        console.log(this.registerForm.userPassword);
         callback(new Error("两次输入密码不一致"));
       } else {
         callback();
@@ -92,7 +94,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          axios.post('http://localhost:8081/login/register', {params: this.registerForm})
+          axios.post('http://localhost:8081/login/register', {
+            userPassword: this.registerForm.userPassword,
+            userName: this.registerForm.userName
+          })
               .then(({data}) => {
                 console.log(data);
                 router.push({path: '/'});
